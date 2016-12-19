@@ -164,7 +164,8 @@ class Database(object):
             raise ValueError("Invalid table name: %r" % table_name)
         return table_name.strip()
 
-    def create_table(self, table_name, primary_id='id', primary_type='Integer'):
+    def create_table(self, table_name, primary_id='id', primary_type='Integer',
+                     auto_flag=True):
         """
         Create a new table.
 
@@ -196,9 +197,6 @@ class Database(object):
             match = re.match(r'^(Integer)$|^(String)(\(\d+\))?$', primary_type)
             if match:
                 if match.group(1) == 'Integer':
-                    auto_flag = False
-                    if primary_id == 'id':
-                        auto_flag = True
                     col = Column(primary_id, Integer, primary_key=True, autoincrement=auto_flag)
                 elif not match.group(3):
                     col = Column(primary_id, String(255), primary_key=True)
@@ -252,7 +250,8 @@ class Database(object):
                                              schema=self.schema)
         return self._tables[table_name]
 
-    def get_table(self, table_name, primary_id='id', primary_type='Integer'):
+    def get_table(self, table_name, primary_id='id', primary_type='Integer',
+                  auto_flag=True):
         """
         Smart wrapper around *load_table* and *create_table*.
 
@@ -275,7 +274,8 @@ class Database(object):
             if self.engine.has_table(table_name, schema=self.schema):
                 return self.load_table(table_name)
             else:
-                return self.create_table(table_name, primary_id, primary_type)
+                return self.create_table(table_name, primary_id, primary_type,
+                                         auto_flag)
         finally:
             self._release()
 
