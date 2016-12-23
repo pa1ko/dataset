@@ -28,7 +28,8 @@ class Database(object):
 
     def __init__(self, url, schema=None, reflect_metadata=True,
                  engine_kwargs=None, reflect_views=True,
-                 ensure_schema=True, row_type=row_type):
+                 ensure_schema=True, row_type=row_type,
+                 thread_pool=1):
         """Configure and connect to the database."""
         if engine_kwargs is None:
             engine_kwargs = {}
@@ -39,7 +40,7 @@ class Database(object):
             if 'poolclass' not in engine_kwargs:
                 engine_kwargs['poolclass'] = StaticPool
 
-        self.lock = threading.RLock()
+        self.lock = threading.Semaphore(value=thread_pool)
         self.local = threading.local()
         if len(parsed_url.query):
             query = parse_qs(parsed_url.query)
