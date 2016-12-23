@@ -15,7 +15,8 @@ __all__ = ['Database', 'Table', 'freeze', 'connect']
 
 
 def connect(url=None, schema=None, reflect_metadata=True, engine_kwargs=None,
-            reflect_views=True, ensure_schema=True, row_type=row_type):
+            reflect_views=True, ensure_schema=True, row_type=row_type,
+            thread_pool=1):
     """ Opens a new connection to a database.
 
     *url* can be any valid `SQLAlchemy engine URL`_.  If *url* is not defined
@@ -39,4 +40,5 @@ def connect(url=None, schema=None, reflect_metadata=True, engine_kwargs=None,
 
     return Database(url, schema=schema, reflect_metadata=reflect_metadata,
                     engine_kwargs=engine_kwargs, reflect_views=reflect_views,
-                    ensure_schema=ensure_schema, row_type=row_type)
+                    ensure_schema=ensure_schema, row_type=row_type,
+                    thread_pool=thread_pool)
