@@ -166,7 +166,7 @@ class Database(object):
         return table_name.strip()
 
     def create_table(self, table_name, primary_id='id', primary_type='Integer',
-                     auto_flag=True):
+                     auto_flag=True, table_kwargs=None):
         """
         Create a new table.
 
@@ -209,7 +209,8 @@ class Database(object):
                 raise DatasetException(
                     "The primary_type has to be either 'Integer' or 'String'.")
 
-            table = SQLATable(table_name, self.metadata, schema=self.schema)
+            table = SQLATable(table_name, self.metadata, schema=self.schema,
+                              **table_kwargs)
             table.append_column(col)
             table.create(self.engine)
             self._tables[table_name] = table
@@ -252,7 +253,7 @@ class Database(object):
         return self._tables[table_name]
 
     def get_table(self, table_name, primary_id='id', primary_type='Integer',
-                  auto_flag=True):
+                  **kwargs):
         """
         Smart wrapper around *load_table* and *create_table*.
 
@@ -276,7 +277,7 @@ class Database(object):
                 return self.load_table(table_name)
             else:
                 return self.create_table(table_name, primary_id, primary_type,
-                                         auto_flag)
+                                         **kwargs)
         finally:
             self._release()
 
